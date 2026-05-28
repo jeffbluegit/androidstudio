@@ -37,10 +37,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.geo.androidstudio.R
+import com.geo.androidstudio.navigation.ROUTE_LOGIN
 
 @Composable
-fun RegisterScreen() {
+fun RegisterScreen(navController: NavHostController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -58,7 +61,7 @@ fun RegisterScreen() {
             color = Color.Blue
         )
         Spacer(modifier = Modifier.height(28.dp))
-        Text("Don't have an account? Login Here!",
+        Text("Already have an account? Login Here!",
             fontSize = (20.sp),
             color= Color(0xFF6200EE),
             )
@@ -157,8 +160,8 @@ fun RegisterScreen() {
                 fontSize = 20.sp,)
         }
         Spacer(modifier = Modifier.height(28.dp))
-        TextButton(onClick = {
-            //navigate to register
+        TextButton(onClick = {navController.navigate(ROUTE_LOGIN)
+
         }) {Text("Don't have an account ? Register Here!")}
 
     }
@@ -166,5 +169,5 @@ fun RegisterScreen() {
 @Preview(showBackground = true)
 @Composable
 fun RegisterScreenPreview(){
-    RegisterScreen()
+    RegisterScreen(rememberNavController())
 }

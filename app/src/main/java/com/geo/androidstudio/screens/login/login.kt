@@ -38,10 +38,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.geo.androidstudio.R
+import com.geo.androidstudio.navigation.ROUTE_DASHBOARD
 
 @Composable
-fun LoginScreen(){
+fun LoginScreen(navController: NavHostController){
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)
@@ -110,6 +113,8 @@ fun LoginScreen(){
         Button(
             onClick = {
                 //connect to firebase
+                //add login logic
+                navController.navigate(ROUTE_DASHBOARD)
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
@@ -131,5 +136,5 @@ fun LoginScreen(){
 @Preview(showBackground = true)
 @Composable
 fun LoginScreenPreview(){
-    LoginScreen()
+    LoginScreen(rememberNavController())
 }
