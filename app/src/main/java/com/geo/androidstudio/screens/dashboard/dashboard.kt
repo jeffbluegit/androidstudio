@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.geo.androidstudio.R
+import com.geo.androidstudio.navigation.ROUTE_ADDPRODUCT
 
 @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -182,11 +183,11 @@ fun DashBoardScreen(navController: NavHostController){
             ){
                 DashboardCard(
                     title = "ADD PRODUCTS",
-                    onClick = {}
+                    onClick = {navController.navigate(ROUTE_ADDPRODUCT)}
                 )
                 DashboardCard(
                     title = "PRODUCTS",
-                    onClick = {}
+                    onClick = {navController.navigate(ROUTE_ADDPRODUCT)}
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "203125900258",
+    "project_id": "deepsea7-28b77",
+    "storage_bucket": "deepsea7-28b77.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203125900258:android:24835821c1cb00a1cfefbb",
+        "android_client_info": {
+          "package_name": "com.geo.androidstudio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATi2E0S-oY34OAmvWpdRFKna9heej09xU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
