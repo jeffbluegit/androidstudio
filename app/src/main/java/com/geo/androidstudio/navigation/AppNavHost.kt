@@ -27,7 +27,7 @@ fun AppNavHost(
             SplashScreen(navController)
         }
         composable(ROUTE_LOGIN) {
-            LoginScreen(navController)
+          LoginScreen(navController)
         }
         composable(ROUTE_DASHBOARD) {
             DashBoardScreen(navController)

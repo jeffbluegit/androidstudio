@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -42,6 +43,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.geo.androidstudio.R
 import com.geo.androidstudio.navigation.ROUTE_DASHBOARD
+import com.geo.androidstudio.navigation.ROUTE_REGISTER
+import com.geo.androidstudio.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(navController: NavHostController){
@@ -60,19 +63,19 @@ fun LoginScreen(navController: NavHostController){
             fontWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.height(28.dp))
-        Text(
-            "Don't Have an account Login Here!",
-            color = Color.Blue,
-            fontSize = (20.sp),
-            fontFamily = FontFamily.SansSerif,
-            fontWeight = FontWeight.Bold,
-            )
-        Spacer(modifier = Modifier.height(28.dp))
         Image(
             painter = painterResource(id = R.drawable.tire),
             contentDescription = "Logo",
             modifier = Modifier.size(200.dp)
                 .clip(CircleShape)
+        )
+        Spacer(modifier = Modifier.height(28.dp))
+        Text(
+            "Already Have an account Login Here!",
+            color = Color.Blue,
+            fontSize = (20.sp),
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.height(28.dp))
         var email by remember { mutableStateOf(value = "") }
@@ -108,13 +111,13 @@ fun LoginScreen(navController: NavHostController){
             modifier = Modifier.fillMaxWidth(),
             visualTransformation = PasswordVisualTransformation()
         )
-        Spacer(modifier = Modifier.fillMaxWidth())
-        Spacer(modifier = Modifier.fillMaxWidth())
+        Spacer(modifier = Modifier.height(28.dp))
+        val context = LocalContext.current
+        val myauth= AuthViewModel(navController,context)
         Button(
             onClick = {
-                //connect to firebase
-                //add login logic
-                navController.navigate(ROUTE_DASHBOARD)
+            //add login logic
+                myauth.login(email,password)
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
@@ -127,9 +130,12 @@ fun LoginScreen(navController: NavHostController){
                 fontSize = 20.sp,)
         }
         Spacer(modifier = Modifier.height(28.dp))
-        TextButton(onClick = {
-        //navigate to register
-         }) {Text("Don't have an account ? Register Here!")}
+        TextButton(onClick = {navController.navigate(ROUTE_REGISTER)}){
+            Text(
+                text = "Don't have an account? Register here",
+                fontSize = 20.sp
+            )
+        }
 
     }
 }

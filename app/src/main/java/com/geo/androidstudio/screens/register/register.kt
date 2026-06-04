@@ -1,5 +1,7 @@
 package com.geo.androidstudio.screens.register
 
+
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,11 +10,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,10 +31,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,132 +42,127 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.geo.androidstudio.R
 import com.geo.androidstudio.navigation.ROUTE_LOGIN
+import com.geo.androidstudio.viewmodel.AuthViewModel
 
 @Composable
-fun RegisterScreen(navController: NavHostController) {
+fun RegisterScreen(navController: NavHostController){
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White),
+            .background(Color.White)
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     )
     {
-        Text(
-            "Register Here",
-            fontSize = (28.sp),
-            fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Cursive,
-            fontStyle = FontStyle.Normal,
-            color = Color.Blue
+        Text("REGISTER",
+            fontSize = 38.sp,
+            color = Color.Green,
+            fontFamily = FontFamily.Serif
         )
-        Spacer(modifier = Modifier.height(28.dp))
-        Text("Already have an account? Login Here!",
-            fontSize = (20.sp),
-            color= Color(0xFF6200EE),
-            )
-            Image(
-                painter = painterResource(id = R.drawable.tire),
-                contentDescription = "Logo",
-                modifier = Modifier.size(200.dp)
-                    .clip(CircleShape)
-            )
-        Spacer(modifier = Modifier.fillMaxWidth())
+        Spacer(modifier = Modifier.height(20.dp))
 
-        var fullname by remember { mutableStateOf(value = "") }
-        var email by remember { mutableStateOf(value = "") }
-        var password by remember { mutableStateOf(value = "") }
-        var confirmPassword by remember { mutableStateOf(value = "") }
-        //Outline TextField FUll NAME
+        Image(
+            painter = painterResource(id = R.drawable.tire),
+            contentDescription = "logo",
+            modifier = Modifier
+                .size(200.dp)
+                .clip(CircleShape)
+        )
+        var fullname by remember { mutableStateOf("") }
+        var email by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("") }
+        var confirmpassword by remember { mutableStateOf("") }
+
+        Spacer(modifier = Modifier.height(20.dp))
         OutlinedTextField(
-            value = fullname,
-            onValueChange = { fullname = it },
-            label = { Text("Enter FUll NAME") },
-            placeholder = { Text("John doe") },
+            value=fullname,
+            onValueChange = {fullname=it},
+            label = {Text("Enter fullname")},
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Person,
-                    contentDescription = "Person Icon"
+                    contentDescription = "person Icon"
                 )
             },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+
         )
-        Spacer(modifier = Modifier.height(28.dp))
-        //Outline text field E-Mail
+        Spacer(modifier = Modifier.height(20.dp))
         OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Enter E-Mail Address") },
-            placeholder = { Text("Enter E-Mail Address") },
+            value=email,
+            onValueChange = {email=it},
+            label = {Text("Enter email address")},
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Email,
                     contentDescription = "Email Icon"
                 )
             },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(28.dp))
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
 
-        //OUTLINE TEXT FIELD PASSWORD
+        )
+        Spacer(modifier = Modifier.height(20.dp))
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Enter Password") },
-            placeholder = { Text("Enter Password") },
+            value=password,
+            onValueChange = {password=it},
+            label = {Text("Enter password")},
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Default.Lock,
-                    contentDescription = "Password Icon"
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "password icon Icon"
                 )
             },
-            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation()
+            singleLine = true
         )
-
-        //outfield text confirm password
-        Spacer(modifier = Modifier.height(28.dp))
-
+        Spacer(modifier = Modifier.height(20.dp))
         OutlinedTextField(
-            value = confirmPassword,
-            onValueChange = { confirmPassword= it },
-            label = { Text("Confirm Your Password") },
+            value=confirmpassword,
+            onValueChange = {confirmpassword=it},
+            label = {Text("Enter password to confirm")},
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Default.Lock,
-                    contentDescription = "Password Icon"
+                    imageVector = Icons.Default.Person,
+                    contentDescription = "password icon Icon"
                 )
             },
-            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth(),
-            visualTransformation = PasswordVisualTransformation()
+            singleLine = true
         )
-        Spacer(modifier = Modifier.height(28.dp))
-        Button(
-            onClick = {
-                //connect to firebase
-            },
+        Spacer(modifier = Modifier.height(20.dp))
+        val context= LocalContext.current
+        val myauth=AuthViewModel(navController, context)
+        Button(onClick = {
+            myauth.signup(fullname,email,password,confirmpassword )
+        },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Blue,
-                contentColor = Color.White
-            )
-        )
-        {
-            Text("Login",
-                fontSize = 20.sp,)
-        }
-        Spacer(modifier = Modifier.height(28.dp))
-        TextButton(onClick = {navController.navigate(ROUTE_LOGIN)
+                containerColor = Color.Green,
+                contentColor = Color.Blue)
+        ) {
+            Text("REGISTER", fontSize = 24.sp)
 
-        }) {Text("Don't have an account ? Register Here!")}
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        TextButton(onClick = {navController.navigate(ROUTE_LOGIN)}) {
+            Text(
+                text = "Already have an account? Login here",
+                fontSize = 20.sp
+            )
+        }
+
+
+
 
     }
+
 }
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun RegisterScreenPreview(){
     RegisterScreen(rememberNavController())
