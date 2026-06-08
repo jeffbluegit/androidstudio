@@ -72,7 +72,7 @@ dependencies {
     //HTTp Login Interceptor
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     //cloudinary dependency
-    implementation("com.cloudinary:cloudinary-android:2.2.1")
+    implementation("com.cloudinary:cloudinary-android:3.0.2")
 
 
 }

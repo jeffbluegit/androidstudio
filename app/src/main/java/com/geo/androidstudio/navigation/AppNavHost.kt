@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.geo.androidstudio.screens.dashboard.DashBoardScreen
 import com.geo.androidstudio.screens.login.LoginScreen
+import com.geo.androidstudio.screens.practice.HobbyScreen
 import com.geo.androidstudio.screens.products.AddProductScreen
 import com.geo.androidstudio.screens.register.RegisterScreen
 import com.geo.androidstudio.screens.splashscreen.SplashScreen
@@ -37,6 +38,9 @@ fun AppNavHost(
         }
         composable(ROUTE_ADDPRODUCT) {
             AddProductScreen(navController)
+        }
+        composable(ROUTE_HOBBIES) {
+            HobbyScreen(navController)
         }
     }
 

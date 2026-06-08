@@ -2,13 +2,19 @@ package com.geo.androidstudio.viewmodel
 
 
 
-import android.R
+import com.geo.androidstudio.R
 import android.content.Context
 import android.net.Uri
 import android.widget.Toast
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.navigation.NavHostController
+import com.geo.androidstudio.models.Product
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,14 +26,15 @@ import okhttp3.RequestBody
 import java.io.InputStream
 
 class ProductViewModel (navController: NavHostController,var context: Context){
+
     var cloudinaryUrl="https://api.cloudinary.com/v1_1/dojp0mlml/upload" //do...use own cloud name
-    var uploadPreset="newproducts"
-    val databasareference= FirebaseDatabase.getInstance().getReference("Products")
+    var uploadPreset="NewProducts"
+    val databaseReference= FirebaseDatabase.getInstance().getReference("Products")
     //functions
     //crud c-create,r-read,u-update,d-delete
     //upload product  to firebase function
     fun uploadProduct(imageUri: Uri?,name:String,price:String,description:String){
-        val ref = databasareference.push()
+        val ref = databaseReference.push()
         val currentUser= FirebaseAuth.getInstance().currentUser
         val userId=currentUser?.uid ?: ""
         CoroutineScope(Dispatchers.IO).launch {
@@ -62,7 +69,7 @@ class ProductViewModel (navController: NavHostController,var context: Context){
         }
 
     }
-    //upload image to clodinary function using okthttp
+    //upload image to cloudinary function using OkHttp
     //extracts the secure image url from the response and returns the url
     private fun uploadToCloudinary(context: Context, uri: Uri): String {
         val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
@@ -90,7 +97,32 @@ class ProductViewModel (navController: NavHostController,var context: Context){
 
 
     //fetch product function
-    //update product function
+    fun allProducts(
+        product: MutableState<Product>,
+        products: SnapshotStateList<Product>
+    )    :SnapshotStateList<Product>{
+        //listener to the database reference to read data in realtime
+        databaseReference.addValueEventListener(object: ValueEventListener {
+            //Method trigger if there is any data changes in the database
+            override fun onDataChange(Snapshot: DataSnapshot) {
+                products.clear()
+                for (snap in Snapshot.children){
+                    val retrievedProduct=snap.getValue(Product::class.java)
+                    if(retrievedProduct!=null){
+                        product.value=retrievedProduct
+                        products.add(retrievedProduct)
+                    }
+                }
+            }
+//Method if there's an error
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(context,"Database Error", Toast.LENGTH_SHORT).show()
+            }
+
+        })
+        return products
+    }
+//update product function
     //delete product function
 
 }

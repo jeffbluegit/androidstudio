@@ -1,6 +1,5 @@
 package com.geo.androidstudio.screens.login
 
-import android.renderscript.Allocation
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -113,7 +112,7 @@ fun LoginScreen(navController: NavHostController){
         )
         Spacer(modifier = Modifier.height(28.dp))
         val context = LocalContext.current
-        val myauth= AuthViewModel(navController,context)
+        val myauth = remember { AuthViewModel(navController, context) }
         Button(
             onClick = {
             //add login logic

@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExitToApp
@@ -52,6 +54,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.geo.androidstudio.R
 import com.geo.androidstudio.navigation.ROUTE_ADDPRODUCT
+import com.geo.androidstudio.navigation.ROUTE_HOBBIES
 import com.geo.androidstudio.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,6 +62,8 @@ import com.geo.androidstudio.viewmodel.AuthViewModel
 fun DashBoardScreen(navController: NavHostController){
     val context=LocalContext.current
     val myauth= AuthViewModel(navController, context)
+    var selectedItem by remember { mutableStateOf(0) }
+
     Scaffold(
         //TOP BAR
         topBar ={
@@ -92,7 +97,6 @@ fun DashBoardScreen(navController: NavHostController){
 
             )
         },
-
         bottomBar = {
            /* BottomAppBar(
                 containerColor = Color.Magenta,
@@ -101,42 +105,25 @@ fun DashBoardScreen(navController: NavHostController){
             {
                 Text("Bottom Bar")
             }*/
-            NavigationBar(){
+            NavigationBar {
                 NavigationBarItem(
-                selected = true,
-                    onClick = {},
-                    icon = {
-                        Icon(
-                        Icons.Default.Home,
-                        contentDescription = "Home Icon"
-                    )
-                    },
-                    label = { Text("Home")},
+                    selected = selectedItem == 0,
+                    onClick = { selectedItem = 0 },
+                    icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
+                    label = { Text("Home") }
                 )
                 NavigationBarItem(
-                    selected = true,
-                    onClick = {},
-                    icon = {
-                        Icon(
-                            Icons.Default.Person,
-                            contentDescription = "Profile Icon"
-                        )
-                    },
-                    label = { Text("My Profile")}
-                    )
-                NavigationBarItem(
-                    selected = true,
-                    onClick = {},
-                    icon = {
-                        Icon(
-                            Icons.Default.Settings,
-                            contentDescription = "Settings Icon"
-                        )
-                    },
-                    label = { Text("Settings")
-                    }
+                    selected = selectedItem == 1,
+                    onClick = { selectedItem = 1 },
+                    icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
+                    label = { Text("My Profile") }
                 )
-
+                NavigationBarItem(
+                    selected = selectedItem == 2,
+                    onClick = { selectedItem = 2 },
+                    icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
+                    label = { Text("Settings") }
+                )
             }
         },
         //END of bottom bar
@@ -156,13 +143,15 @@ fun DashBoardScreen(navController: NavHostController){
             modifier = Modifier
                 .padding(innerpadding)
                 .padding(16.dp)
-                .fillMaxSize(),
+                .fillMaxSize()
+
+            .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ){
             var username by remember { mutableStateOf("Loading...") }
             LaunchedEffect(Unit) {
-                myauth.getCurrenUserName { username = it }
+                myauth.getCurrentUserName { username = it }
             }
             Surface(
                 shape = RoundedCornerShape(16.dp),
@@ -170,7 +159,7 @@ fun DashBoardScreen(navController: NavHostController){
                 color = Color.LightGray,
                 modifier = Modifier
                     .height(100.dp)
-                    .width(150.dp)
+                    .fillMaxWidth()
             )
 
             {
@@ -185,19 +174,25 @@ fun DashBoardScreen(navController: NavHostController){
             Spacer(   modifier = Modifier.height(12.dp))
             Text(text = "Welcome $username")
             Spacer(   modifier = Modifier.height(12.dp))
-            Text(text = "Dashboard Screen")
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ){
                 DashboardCard(
                     title = "ADD PRODUCTS",
+                    modifier = Modifier.weight(1f),
                     onClick = {navController.navigate(ROUTE_ADDPRODUCT)}
                 )
                 DashboardCard(
                     title = "PRODUCTS",
+                    modifier = Modifier.weight(1f),
                     onClick = {navController.navigate(ROUTE_ADDPRODUCT)}
+                )
+                DashboardCard(
+                    title = "HOBBIES",
+                    modifier = Modifier.weight(1f),
+                    onClick = {navController.navigate(ROUTE_HOBBIES)}
                 )
             }
             Spacer(modifier = Modifier.height(12.dp))
@@ -228,33 +223,29 @@ fun DashBoardScreenPreview(){
 }
 //dashboard card
 @Composable
-fun DashboardCard(
-    title:String,
-    onClick:()->Unit
-) {
-    Surface(
+fun DashboardCard(title: String, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Card( // Using Card instead of Surface for standard M3 look
         shape = RoundedCornerShape(12.dp),
-        shadowElevation = 6.dp,
-        color = Color.LightGray,
-        modifier = Modifier
-            .width(150.dp)
+        modifier = modifier
+            .width(100.dp) // Adjusted to fit 2 per screen comfortably
             .height(100.dp)
+            .padding(horizontal = 4.dp)
             .clickable { onClick() }
     ) {
         Column(
-            modifier = Modifier.padding(12.dp),
+            modifier = Modifier.fillMaxSize().padding(12.dp),
             verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = title,
-                modifier = Modifier.padding(12.dp),
                 style = MaterialTheme.typography.titleSmall,
-                color = Color(0xFF800000),
+                color = Color(0xFF800000)
             )
         }
     }
-
 }
+
 @Preview(showBackground = true)
 @Composable
 fun DashBoardCardPreview(){

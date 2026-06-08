@@ -18,95 +18,100 @@ class AuthViewModel(var navController: NavHostController, var context: Context) 
     // Register Function
     fun signup(fullname: String, email: String, password: String, confirmpassword: String) {
         // Validation check
-        if (fullname.isBlank() || email.isBlank() || password.isBlank() || confirmpassword.isBlank()) {
-            Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show()
+        if (fullname.isBlank()||email.isBlank() || password.isBlank() || confirmpassword.isBlank()) {
+            Toast.makeText(context, "All files need to be filled.", Toast.LENGTH_SHORT).show()
             return
-        }
-
-        if (password != confirmpassword) {
+        } else if (password != confirmpassword) {
             Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
             return
-        }
+        } else {
 
-        mAuth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val userdata = User(fullname, email, password, mAuth.currentUser?.uid!!)
-                    //save user to realtime database
-                    val regRef = FirebaseDatabase.getInstance().getReference()
-                        .child("Users/ + mAuth.currentUser!!.uid")
-                    regRef.setValue(userdata).addOnCompleteListener {
-                        if (it.isSuccessful) {
+            mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val currentUser = mAuth.currentUser
+                        val userId = currentUser?.uid
+                        if (userId != null) {
+                            val userdata = User(fullname, email, password, userId)
 
-                            // 2. Save to Firestore
-                            FirebaseFirestore.getInstance()
-                                .collection("Users")
-                                .document(mAuth.currentUser!!.uid)
-                                .set(userdata)
-                                .addOnCompleteListener { firestoreTask->
-                                    if (firestoreTask.isSuccessful) {
-                                        Toast.makeText(
-                                            context,
-                                            "User registered succefully",
-                                            Toast.LENGTH_LONG
-                                        ).show()
-                                        navController.navigate(ROUTE_LOGIN)
-                                    }
+                            //save user to realtime database
+                            val regRef = FirebaseDatabase.getInstance().getReference()
+                                .child("Users/$userId")
+                            regRef.setValue(userdata).addOnCompleteListener { dbTask ->
+                                if (dbTask.isSuccessful) {
+//                            save user to firestore
+                                    FirebaseFirestore.getInstance()
+                                        .collection("Users")
+                                        .document(userId)
+                                        .set(userdata)
+                                        .addOnCompleteListener { firestoreTask ->
+                                            if (firestoreTask.isSuccessful) {
+                                                Toast.makeText(
+                                                    context, "User registered successfully",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                                navController.navigate(ROUTE_LOGIN)
+                                            }
+                                        }
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "DB Error:${dbTask.exception?.message}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
-                        }else {
+                            }
+                        } else {
                             Toast.makeText(
                                 context,
-                                "${it.exception!!.message}",
-                                Toast.LENGTH_SHORT).show()
-
-
+                                "Auth Error: ${task.exception?.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            navController.navigate(ROUTE_REGISTER)
                         }
                     }
-                }else{
-                    navController.navigate(ROUTE_REGISTER)
                 }
-            }
+        }
     }
-
-    // Login Function
+        // Login Function
     fun login(email: String, password: String) {
-        if (email.isBlank() || password.isBlank()) {
-            Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-            return
-        }
+            if (email.isBlank() || password.isBlank()) {
+                Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                return
+            }
 
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_SHORT).show()
-                navController.navigate(ROUTE_DASHBOARD) {
-                    // Pop up to login screen so pressing back button doesn't log them back out
-                    popUpTo(ROUTE_LOGIN) { inclusive = true }
+                 Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_SHORT).show()
+                    navController.navigate(ROUTE_DASHBOARD) {
+                        // Pop up to login screen so pressing back button doesn't log them back out
+                        popUpTo(ROUTE_LOGIN) { inclusive = true }
+                    }
+                } else {
+                    Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT)
+                        .show()
                 }
-            } else {
-                Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    // Logout Function
+        // Logout Function
     fun logout() {
-        mAuth.signOut()
-        navController.navigate(ROUTE_LOGIN)
-        {popUpTo(0){inclusive=true}}
-    }
-    //Get currentusername function
-    fun getCurrenUserName(onResult:(String)->Unit){
-        val userId=mAuth.currentUser?.uid?: run{
-        onResult("User")
-            return
+            mAuth.signOut()
+            navController.navigate(ROUTE_LOGIN)
+            { popUpTo(0) { inclusive = true } }
         }
-        FirebaseDatabase.getInstance().getReference("Users/$userId")
-            .get()
-            .addOnSuccessListener {snapshot ->
-                onResult(snapshot.child("Fullname").getValue(String::class.java)?: "User")
-            }
-            .addOnFailureListener {
+        //Get CurrentUsername function
+    fun getCurrentUserName(onResult: (String) -> Unit) {
+            val userId = mAuth.currentUser?.uid ?: run {
                 onResult("User")
+                return
             }
-    }
+            FirebaseDatabase.getInstance().getReference("Users/$userId")
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    onResult(snapshot.child("fullname").getValue(String::class.java) ?: "User")
+                }
+                .addOnFailureListener {
+                    onResult("User")
+                }
+        }
 }

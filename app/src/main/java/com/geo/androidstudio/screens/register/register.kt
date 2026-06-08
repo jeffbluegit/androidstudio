@@ -2,6 +2,7 @@ package com.geo.androidstudio.screens.register
 
 
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -136,9 +137,15 @@ fun RegisterScreen(navController: NavHostController){
         )
         Spacer(modifier = Modifier.height(20.dp))
         val context= LocalContext.current
-        val myauth=AuthViewModel(navController, context)
+        val myauth = remember { AuthViewModel(navController, context) }
         Button(onClick = {
-            myauth.signup(fullname,email,password,confirmpassword )
+            if (password != confirmpassword) {
+                Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
+            } else if (fullname.isBlank() || email.isBlank() || password.isBlank()) {
+                Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
+            } else{                myauth.signup(fullname,email,password,confirmpassword )
+            }
+
         },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
@@ -155,10 +162,6 @@ fun RegisterScreen(navController: NavHostController){
                 fontSize = 20.sp
             )
         }
-
-
-
-
     }
 
 }

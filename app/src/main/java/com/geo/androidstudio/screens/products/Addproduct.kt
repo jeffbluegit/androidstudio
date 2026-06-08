@@ -1,6 +1,6 @@
 package com.geo.androidstudio.screens.products
 
-import android.R.attr.onClick
+
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -34,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,10 +45,9 @@ import com.geo.androidstudio.R
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.AsyncImage
-
+import com.geo.androidstudio.viewmodel.ProductViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-
 fun AddProductScreen(navController: NavHostController) {
     var productName by remember { mutableStateOf(value = "") }
     var productPrice by remember { mutableStateOf(value = "") }
@@ -56,10 +58,6 @@ fun AddProductScreen(navController: NavHostController) {
     ){uri: Uri? ->
         imageUri = uri
     }
-
-
-
-
     Scaffold(
         //Top Bar
         topBar = {
@@ -76,10 +74,12 @@ fun AddProductScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .padding(innerpadding)
+                .verticalScroll(rememberScrollState())
                 .fillMaxSize(),
+
+
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
-
             ) {
             Text(
                 "ADD NEW PRODUCT",
@@ -89,7 +89,6 @@ fun AddProductScreen(navController: NavHostController) {
 //                verticalArrangement = Arrangement.Center,
             )
                 Spacer(modifier = Modifier.height(28.dp))
-
             OutlinedTextField(
                 value = productName,
                 onValueChange = { productName = it },
@@ -101,6 +100,13 @@ fun AddProductScreen(navController: NavHostController) {
                 value = productPrice,
                 onValueChange = { productPrice = it },
                 label = { Text("Enter Product Price") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            OutlinedTextField(
+                value =description,
+                onValueChange = { description = it },
+                label = { Text("Enter Product Description") },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(20.dp))
@@ -119,7 +125,6 @@ fun AddProductScreen(navController: NavHostController) {
                 )
 
             }
-
             //ADD OUTLINED TEXT_FIELD FOR PRICE, DESCRIPTION, AND CATEGORY
             //product image picker + previewer
             OutlinedButton(onClick = {imagePickerLauncher.launch("image/*")},
@@ -133,19 +138,28 @@ fun AddProductScreen(navController: NavHostController) {
             ) {
                 Text("Choose Image")
             }
+            val context = LocalContext.current
+            val myProductViewModel = remember{ProductViewModel(navController,context)}
             Button(
-                onClick= {},
+                onClick= {
+                    myProductViewModel.uploadProduct(
+                        imageUri = imageUri,
+                        name = productName,
+                        price = productPrice,
+                        description = description
+                    )
+                    //clear outlined text fields
+                    productPrice=""
+                    description=""
+                    productName=""
+                    imageUri=null
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Add Product")
             }
         }
-
-
-
     }
-
-
 }
 @Preview(showBackground = true)
 @Composable
