@@ -10,6 +10,8 @@ import com.geo.androidstudio.screens.dashboard.DashBoardScreen
 import com.geo.androidstudio.screens.login.LoginScreen
 import com.geo.androidstudio.screens.practice.HobbyScreen
 import com.geo.androidstudio.screens.products.AddProductScreen
+import com.geo.androidstudio.screens.products.ProductListScreen
+import com.geo.androidstudio.screens.products.UpdateProductScreen
 import com.geo.androidstudio.screens.register.RegisterScreen
 import com.geo.androidstudio.screens.splashscreen.SplashScreen
 
@@ -36,11 +38,18 @@ fun AppNavHost(
         composable(ROUTE_REGISTER) {
             RegisterScreen(navController)
         }
-        composable(ROUTE_ADDPRODUCT) {
+        composable(`ROUTE_ADD-PRODUCT`) {
             AddProductScreen(navController)
         }
         composable(ROUTE_HOBBIES) {
             HobbyScreen(navController)
+        }
+        composable(ROUTE_PRODUCTLIST) {
+            ProductListScreen(navController)
+        }
+        composable(ROUTE_UPDATEPRODUCT+ "/{productId}") {
+            val productId=backStackEntry.argument?.getString("productId")
+            UpdateProductScreen(navController,productId)
         }
     }
 

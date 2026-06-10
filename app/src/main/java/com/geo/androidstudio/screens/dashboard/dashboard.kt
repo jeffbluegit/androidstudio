@@ -1,7 +1,5 @@
 package com.geo.androidstudio.screens.dashboard
 
-import android.R.attr.contentDescription
-import android.R.attr.onClick
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,7 +20,6 @@ import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -53,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.geo.androidstudio.R
-import com.geo.androidstudio.navigation.ROUTE_ADDPRODUCT
+import com.geo.androidstudio.navigation.`ROUTE_ADD-PRODUCT`
 import com.geo.androidstudio.navigation.ROUTE_HOBBIES
 import com.geo.androidstudio.viewmodel.AuthViewModel
 
@@ -182,12 +179,12 @@ fun DashBoardScreen(navController: NavHostController){
                 DashboardCard(
                     title = "ADD PRODUCTS",
                     modifier = Modifier.weight(1f),
-                    onClick = {navController.navigate(ROUTE_ADDPRODUCT)}
+                    onClick = {navController.navigate(`ROUTE_ADD-PRODUCT`)}
                 )
                 DashboardCard(
                     title = "PRODUCTS",
                     modifier = Modifier.weight(1f),
-                    onClick = {navController.navigate(ROUTE_ADDPRODUCT)}
+                    onClick = {navController.navigate(`ROUTE_ADD-PRODUCT`)}
                 )
                 DashboardCard(
                     title = "HOBBIES",

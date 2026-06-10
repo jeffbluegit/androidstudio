@@ -143,7 +143,7 @@ fun RegisterScreen(navController: NavHostController){
                 Toast.makeText(context, "Passwords do not match", Toast.LENGTH_SHORT).show()
             } else if (fullname.isBlank() || email.isBlank() || password.isBlank()) {
                 Toast.makeText(context, "Please fill all fields", Toast.LENGTH_SHORT).show()
-            } else{                myauth.signup(fullname,email,password,confirmpassword )
+            } else{myauth.signup(fullname,email,password,confirmpassword )
             }
 
         },
