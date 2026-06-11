@@ -29,7 +29,7 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import java.io.InputStream
 
-class ProductViewModel (navController: NavHostController,var context: Context){
+class ProductViewModel (var navController: NavHostController,var context: Context){
 
     var cloudinaryUrl="https://api.cloudinary.com/v1_1/dojp0mlml/upload" //do...use own cloud name
     var uploadPreset="NewProducts"
@@ -101,10 +101,10 @@ class ProductViewModel (navController: NavHostController,var context: Context){
 
 
     //fetch product function
-    fun allProducts(
+     fun allProducts(
         product: MutableState<Product>,
         products: SnapshotStateList<Product>
-    )    :SnapshotStateList<Product>{
+    ):SnapshotStateList<Product>{
         //listener to the database reference to read data in realtime
         databaseReference.addValueEventListener(object: ValueEventListener {
             //Method trigger if there is any data changes in the database
@@ -142,7 +142,8 @@ fun updateProduct(productId:String,
                   name:String,
                   price:String,
                   description:String,
-                  imageUri: Uri?)
+                  imageUri: Uri?
+)
 {
     CoroutineScope(Dispatchers.IO).launch {
         try {
@@ -154,22 +155,25 @@ fun updateProduct(productId:String,
                 "name" to name,
                 "price" to price,
                 "description" to description,
-                "userId" to userId
+                "userId" to userId,
             )
-            if(!newImageUrl)
+
+            if(!newImageUrl.isNullOrEmpty()){
+                updates["imageUrl"] = newImageUrl
+            }
             databaseReference.child(productId).updateChildren(updates).await()
-               withContext(Dispatcher.Main){
+               withContext(Dispatchers.Main){
                    Toast.makeText(context, "Product updated successfully", Toast.LENGTH_SHORT).show()
                    navController.navigate(ROUTE_PRODUCTLIST)
 
                }
-                }
+
 
         }
         catch(e: Exception){
-            withContext(Dispatcher.Main) {
+            withContext(Dispatchers.Main) {
 
-                Toast.makeText(context,"Update Failed : ${}" )            }
+                Toast.makeText(context,"Update Failed : ${e.message}", Toast.LENGTH_SHORT).show()}
         }
     }
 

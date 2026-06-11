@@ -52,6 +52,7 @@ import androidx.navigation.compose.rememberNavController
 import com.geo.androidstudio.R
 import com.geo.androidstudio.navigation.`ROUTE_ADD-PRODUCT`
 import com.geo.androidstudio.navigation.ROUTE_HOBBIES
+import com.geo.androidstudio.navigation.ROUTE_PRODUCTLIST
 import com.geo.androidstudio.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -184,7 +185,7 @@ fun DashBoardScreen(navController: NavHostController){
                 DashboardCard(
                     title = "PRODUCTS",
                     modifier = Modifier.weight(1f),
-                    onClick = {navController.navigate(`ROUTE_ADD-PRODUCT`)}
+                    onClick = {navController.navigate(ROUTE_PRODUCTLIST)}
                 )
                 DashboardCard(
                     title = "HOBBIES",

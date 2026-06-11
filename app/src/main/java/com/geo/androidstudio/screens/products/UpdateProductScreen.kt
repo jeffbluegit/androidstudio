@@ -27,16 +27,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil3.Uri
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UpdateProductScreen(navController: NavHostController){
+fun UpdateProductScreen(navController: NavHostController,id: String){
     var productName by remember { mutableStateOf("")}
     var price by remember { mutableStateOf("")} }
-    var description by remember {mutableStateof("")
+    var description by remember {mutableStateof("") }
     var imageUrl by remember {mutableStateOf<String?>(null)}
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
         //Image Picker
-        val imagePickerLauncher=rememberLauncherForActivityResult(
+    val imagePickerLauncher=rememberLauncherForActivityResult(
             contract = ActivityResultContracts.GetContent(),
         )
     Scaffold(
