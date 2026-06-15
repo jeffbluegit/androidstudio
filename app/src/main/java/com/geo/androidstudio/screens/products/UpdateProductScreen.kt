@@ -1,7 +1,7 @@
 package com.geo.androidstudio.screens.products
 
-import android.R.attr.id
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -37,13 +37,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
+import com.geo.androidstudio.models.Product
 import com.geo.androidstudio.viewmodel.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateProductScreen(navController: NavHostController,productId: String){
     val context = LocalContext.current
-    val productviewmodel = ProductViewModel(navController, context)
+    val productviewmodel = remember {ProductViewModel(navController, context) }
 
     var productName by remember { mutableStateOf("")}
     var price by remember { mutableStateOf("") }
@@ -57,13 +58,23 @@ fun UpdateProductScreen(navController: NavHostController,productId: String){
     val imagePickerLauncher= rememberLauncherForActivityResult(
         contract= ActivityResultContracts.GetContent()){
             uri:Uri? ->
-        if (uri !=null) imageUri=imageUri
+        if (uri !=null) imageUri = uri
     }
     //fetch
 
 //fetch product data
     LaunchedEffect(productId) {
-        productviewmodel.fetchProductById(productId) { product ->}
+        productviewmodel.databaseReference.child(productId).get().addOnSuccessListener {snapshot ->
+            val product = snapshot.getValue(Product::class.java)
+            product?.let {
+                productName = it.name
+                price = it.price
+                description = it.description
+                imageUrl = it.imageUrl
+            }
+        }.addOnFailureListener {
+            Toast.makeText(context, "Failed to Fetch Product", Toast.LENGTH_SHORT).show()
+        }
 
     }
     Scaffold(
@@ -132,13 +143,12 @@ fun UpdateProductScreen(navController: NavHostController,productId: String){
             //Update Product Button
             Button(onClick = {
                 //UPDATE PRODUCT LOGIC
-                ProductViewModel.updateProduct(
-                    id = id,
+               productviewmodel.updateProduct(
+                    productId = productId,
                     name = productName,
                     price = price,
                     description = description,
                     imageUri = imageUri,
-                    oldImageUri = existingImageUri
                 )
             },
                 modifier = Modifier.fillMaxWidth(),

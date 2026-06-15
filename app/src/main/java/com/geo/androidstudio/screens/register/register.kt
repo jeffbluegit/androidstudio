@@ -46,7 +46,10 @@ import com.geo.androidstudio.navigation.ROUTE_LOGIN
 import com.geo.androidstudio.viewmodel.AuthViewModel
 
 @Composable
-fun RegisterScreen(navController: NavHostController){
+fun RegisterScreen(
+    navController: NavHostController,
+
+    viewmodel:AuthViewModel = AuthViewModel(navController, LocalContext.current)){
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.geo.androidstudio.screens.dashboard.DashBoardScreen
+import com.geo.androidstudio.screens.dashboard.UserDashboardScreen
 import com.geo.androidstudio.screens.login.LoginScreen
 import com.geo.androidstudio.screens.practice.HobbyScreen
 import com.geo.androidstudio.screens.products.AddProductScreen
@@ -49,7 +50,10 @@ fun AppNavHost(
         }
         composable(ROUTE_UPDATEPRODUCT + "/{productId}") {backStackEntry->
             val productId=backStackEntry.arguments?.getString("productId")
-            UpdateProductScreen(navController, productID = "$productId")
+            UpdateProductScreen(navController, productId = productId ?: "")
+        }
+        composable(ROUTE_USERDASHBOARD) {
+            UserDashboardScreen(navController)
         }
     }
 

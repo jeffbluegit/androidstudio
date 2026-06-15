@@ -1,5 +1,6 @@
 package com.geo.androidstudio.screens.login
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -47,10 +50,17 @@ import com.geo.androidstudio.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(navController: NavHostController){
-    Column(modifier = Modifier
+    val scrollState = rememberScrollState()
+    val context = LocalContext.current
+
+    //
+    val myauth = remember { AuthViewModel (navController,context)}
+    Column(
+        modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)
-        .background(Color.White),
+        .background(Color.White)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -111,12 +121,15 @@ fun LoginScreen(navController: NavHostController){
             visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(28.dp))
-        val context = LocalContext.current
-        val myauth = remember { AuthViewModel(navController, context) }
+
         Button(
             onClick = {
-            //add login logic
-                myauth.login(email,password)
+                if (email.isBlank() || password.isBlank() )
+                {
+                    Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                } else {
+                    myauth.login(email,password)
+                }
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
