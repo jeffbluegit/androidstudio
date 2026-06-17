@@ -2,20 +2,18 @@ package com.geo.androidstudio.viewmodel
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.ui.semantics.Role
 import androidx.navigation.NavHostController
 import com.geo.androidstudio.models.User
 import com.geo.androidstudio.navigation.ROUTE_DASHBOARD
 import com.geo.androidstudio.navigation.ROUTE_LOGIN
-import com.geo.androidstudio.navigation.ROUTE_REGISTER
 import com.geo.androidstudio.navigation.ROUTE_USERDASHBOARD
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FirebaseFirestore
 
 class AuthViewModel(var navController: NavHostController, var context: Context) {
 
     private var mAuth = FirebaseAuth.getInstance()
+    private val dbUrl = "https://deepsea7-28b77-default-rtdb.firebaseio.com/"
 
     // Register Function
     fun signup(fullname: String, email: String, password: String, confirmpassword: String) {
@@ -34,8 +32,7 @@ class AuthViewModel(var navController: NavHostController, var context: Context) 
                     val userId = mAuth.currentUser?.uid ?: return@addOnCompleteListener
                     val userData = User(fullname, email, password, userId, role = "User")
 
-
-                    val database = FirebaseDatabase.getInstance("https://deepsea7-28b77-default-rtdb.firebaseio.com/")
+                    val database = FirebaseDatabase.getInstance(dbUrl)
 
                     //save user to realtime database
                     val regRef = database.getReference("Users").child(userId)
@@ -49,7 +46,6 @@ class AuthViewModel(var navController: NavHostController, var context: Context) 
                             ).show()
                             navController.navigate(ROUTE_LOGIN)
                         } else {
-                            //This will show you exactly why the database write is failing
                             Toast.makeText(
                                 context,
                                 "DB Error: ${dbTask.exception?.message}",
@@ -66,69 +62,71 @@ class AuthViewModel(var navController: NavHostController, var context: Context) 
                 }
             }
     }
-        // Login Function
-        fun login(email: String, password: String) {
-            if (email.isBlank() || password.isBlank()) {
-                Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-                return
-            }
 
-            mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val userId = mAuth.currentUser?.uid ?: ""
-                        //fetch the user role
-                    FirebaseDatabase.getInstance().reference.child("Users")
-                        .child(userId).get().addOnSuccessListener {Snapshot ->
-                            val role = Snapshot.child("role").value.toString()
-                            Toast.makeText(context,"Successfully Logged in", Toast.LENGTH_SHORT).show()
-                            if (role == "admin") {
-                                navController.navigate(ROUTE_DASHBOARD)
+    // Login Function
+    fun login(email: String, password: String) {
+        if (email.isBlank() || password.isBlank()) {
+            Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-                            } else {
-                                navController.navigate(ROUTE_USERDASHBOARD)
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val userId = mAuth.currentUser?.uid ?: ""
+                //fetch the user role
+                FirebaseDatabase.getInstance(dbUrl)
+                    .reference
+                    .child("Users")
+                    .child(userId)
+                    .get()
+                    .addOnSuccessListener { snapshot ->
+                        val role = snapshot.child("role").value.toString()
+                        Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_SHORT).show()
 
+                        if (role == "admin") {
+                            navController.navigate(ROUTE_DASHBOARD) {
+                                popUpTo(ROUTE_LOGIN) { inclusive = true }
                             }
-                        }.addOnFailureListener {
-                            Toast.makeText(context, "Error: ${it.message}", Toast.LENGTH_SHORT).show()
+                        } else {
+                            navController.navigate(ROUTE_USERDASHBOARD) {
+                                popUpTo(ROUTE_LOGIN) { inclusive = true }
+                            }
                         }
-
-
-                    val database = FirebaseDatabase.getInstance("https://deepsea7-28b77-default-rtdb.firebaseio.com/")
-                    val userRef = database.getReference("Users").child(userId)
-
-                    Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_SHORT).show()
-                    navController.navigate(ROUTE_DASHBOARD) {
-                        // Pop up to login screen so pressing back button doesn't log them back out
-                        popUpTo(ROUTE_LOGIN) { inclusive = true }
+                    }.addOnFailureListener {
+                        Toast.makeText(
+                            context,
+                            "Error fetching role: ${it.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                } else {
-                    Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT)
-                        .show()
-                }
+            } else {
+                Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT)
+                    .show()
             }
-        }
-
-        // Logout Function
-        fun logout() {
-            mAuth.signOut()
-            navController.navigate(ROUTE_LOGIN)
-            { popUpTo(0) { inclusive = true } }
-        }
-
-        //Get CurrentUsername function
-        fun getCurrentUserName(onResult: (String) -> Unit) {
-            val userId = mAuth.currentUser?.uid ?: run {
-                onResult("User")
-                return
-            }
-            FirebaseDatabase.getInstance("").getReference("Users/$userId")
-                .get()
-                .addOnSuccessListener { snapshot ->
-                    onResult(snapshot.child("fullname").getValue(String::class.java) ?: "User")
-                }
-                .addOnFailureListener {
-                    onResult("User")
-                }
         }
     }
 
+    // Logout Function
+    fun logout() {
+        mAuth.signOut()
+        navController.navigate(ROUTE_LOGIN) {
+            popUpTo(0) { inclusive = true }
+        }
+    }
+
+    //Get CurrentUsername function
+    fun getCurrentUserName(onResult: (String) -> Unit) {
+        val userId = mAuth.currentUser?.uid ?: run {
+            onResult("User")
+            return
+        }
+        FirebaseDatabase.getInstance(dbUrl).getReference("Users/$userId")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                onResult(snapshot.child("fullname").getValue(String::class.java) ?: "User")
+            }
+            .addOnFailureListener {
+                onResult("User")
+            }
+    }
+}

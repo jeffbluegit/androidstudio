@@ -57,167 +57,162 @@ import com.geo.androidstudio.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-fun DashBoardScreen(navController: NavHostController){
-    val context=LocalContext.current
-    val myauth= AuthViewModel(navController, context)
-    var selectedItem by remember { mutableStateOf(0) }
-
+fun DashboardScreen(navController: NavHostController){
+    val context= LocalContext.current
+    val myauth=AuthViewModel(navController,context)
     Scaffold(
-        //TOP BAR
-        topBar ={
+        //TOP bar
+        topBar = {
             TopAppBar(
-                title = { Text("Dashboard")},
+                title = {Text("my dashboard")},
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Magenta,
-                    titleContentColor = Color.Blue
-                ),
-                actions = {
-                    IconButton(onClick = {}) {
+                    containerColor = Color.Green,
+                    titleContentColor = Color.Blue),
+                actions={
+                    IconButton(onClick = {}){
                         Icon(Icons.Default.Settings,
-                            contentDescription = "Settings Icon"
-                        )
+                            contentDescription = "settings icon")
                     }
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {}){
                         Icon(Icons.Default.Person,
-                            contentDescription = "Person Icon"
-                        )
+                            contentDescription = "person icon")
                     }
                     IconButton(onClick = {
-                        //add logout code
                         myauth.logout()
-                    }) {
-                        Icon(
-                            Icons.Default.ExitToApp,
-                            contentDescription = "ExitIcon"
-                        )
+                    }){
+                        Icon(Icons.Default.ExitToApp,
+                            contentDescription = " logout icon ")
                     }
                 }
-
             )
         },
+        //bottombar
         bottomBar = {
-           /* BottomAppBar(
-                containerColor = Color.Magenta,
-                contentColor = Color.Black
-            )
-            {
-                Text("Bottom Bar")
-            }*/
-            NavigationBar {
+//            BottomAppBar(
+//                containerColor = Color.Green,
+//                contentColor = Color.Blue) {
+//                Text("bottom bar")
+//            }
+            NavigationBar(
+                containerColor = Color.Green,
+            ) {
                 NavigationBarItem(
-                    selected = selectedItem == 0,
-                    onClick = { selectedItem = 0 },
-                    icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
-                    label = { Text("Home") }
+                    selected = true,
+                    onClick = {},
+                    icon = {
+                        Icon(Icons.Default.Home,
+                            contentDescription ="home icon")
+                    },
+                    label = {Text("Home")}
                 )
                 NavigationBarItem(
-                    selected = selectedItem == 1,
-                    onClick = { selectedItem = 1 },
-                    icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
-                    label = { Text("My Profile") }
+                    selected = false,
+                    onClick = {},
+                    icon = {
+                        Icon(Icons.Default.Settings,
+                            contentDescription ="settings icon")
+                    },
+                    label = {Text("Settings")}
                 )
                 NavigationBarItem(
-                    selected = selectedItem == 2,
-                    onClick = { selectedItem = 2 },
-                    icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
-                    label = { Text("Settings") }
+                    selected = false,
+                    onClick = {},
+                    icon = {
+                        Icon(Icons.Default.Person,
+                            contentDescription ="person icon")
+                    },
+                    label = {Text("Profile")}
                 )
             }
         },
-        //END of bottom bar
-        //FLOATING ACTION BUTTON
+        //floating action button
         floatingActionButton = {
             FloatingActionButton(onClick = {}) {
-                Icon(Icons
-                    .Default.Add,
-//                    .Color = Color.White,
-                    contentDescription = "Add Icon")
+                Icon(Icons.Default.Add, contentDescription = "add icon")
             }
-
         }
     )
-    {innerpadding ->
+    {
+            innerpadding ->
         Column(
             modifier = Modifier
                 .padding(innerpadding)
                 .padding(16.dp)
-                .fillMaxSize()
-
-            .verticalScroll(rememberScrollState()),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Top
-        ){
-            var username by remember { mutableStateOf("Loading...") }
+            verticalArrangement = Arrangement.Center
+        ) {
+            var username by remember { mutableStateOf("loading ...") }
             LaunchedEffect(Unit) {
-                myauth.getCurrentUserName { username = it }
+                myauth.getCurrentUserName { username=it }
             }
+            //surface
             Surface(
                 shape = RoundedCornerShape(16.dp),
                 shadowElevation = 8.dp,
-                color = Color.LightGray,
+                color = Color.White,
                 modifier = Modifier
-                    .height(100.dp)
+                    .height(200.dp)
                     .fillMaxWidth()
-            )
+            ) {
 
-            {
                 Image(
-                    painter = painterResource(id = R.drawable.tech),
-                    contentDescription = "Banner",
+                    painter = painterResource(id=R.drawable.tire),
+                    contentDescription = "banner",
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 )
             }
-            Spacer(   modifier = Modifier.height(12.dp))
-            Text(text = "Welcome $username")
-            Spacer(   modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(20.dp) )
+            Text(text="welcome  $username",
+                color = Color(0xFF2E7D32),
+                style = MaterialTheme.typography.headlineSmall
+            )
+            Text("welcome to admin dashboard",
+                color = Color(0xFF2E7D32),
+                style = MaterialTheme.typography.headlineSmall
+            )
+            Spacer(modifier = Modifier.height(20.dp))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-            ){
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 DashboardCard(
-                    title = "ADD PRODUCTS",
-                    modifier = Modifier.weight(1f),
+                    title = "ADD PRODUCT",
                     onClick = {navController.navigate(`ROUTE_ADD-PRODUCT`)}
                 )
                 DashboardCard(
                     title = "PRODUCTS",
-                    modifier = Modifier.weight(1f),
-                    onClick = {navController.navigate(ROUTE_PRODUCTLIST)}
-                )
-                DashboardCard(
-                    title = "HOBBIES",
-                    modifier = Modifier.weight(1f),
-                    onClick = {navController.navigate(ROUTE_HOBBIES)}
+                    onClick = {
+                        navController.navigate(ROUTE_PRODUCTLIST)
+                    }
                 )
             }
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ){
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 DashboardCard(
                     title = "DEEPSEEK",
                     onClick = {}
                 )
                 DashboardCard(
                     title = "PROFILE",
-                    onClick = {}
+                    onClick = {
+//                        navController.navigate(ROUTE_USERPROFILE)}
+                    }
                 )
-
             }
+
+
         }
-
-
     }
 }
 @Preview
 @Composable
 fun DashBoardScreenPreview(){
-    DashBoardScreen(rememberNavController())
+    DashboardScreen(rememberNavController())
 }
 //dashboard card
 @Composable

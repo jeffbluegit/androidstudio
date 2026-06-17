@@ -31,7 +31,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -44,7 +43,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.geo.androidstudio.R
-import com.geo.androidstudio.navigation.ROUTE_DASHBOARD
 import com.geo.androidstudio.navigation.ROUTE_REGISTER
 import com.geo.androidstudio.viewmodel.AuthViewModel
 
@@ -65,13 +63,13 @@ fun LoginScreen(navController: NavHostController){
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            "Welcome to Home.",
+            "Welcome to Your App.",
             color = Color.Blue,
             fontSize = (28.sp),
             fontFamily = FontFamily.Serif,
             fontWeight = FontWeight.Bold,
         )
-        Spacer(modifier = Modifier.height(28.dp))
+        Spacer(modifier = Modifier.height(28.dp) )
         Image(
             painter = painterResource(id = R.drawable.tire),
             contentDescription = "Logo",
@@ -80,13 +78,14 @@ fun LoginScreen(navController: NavHostController){
         )
         Spacer(modifier = Modifier.height(28.dp))
         Text(
-            "Already Have an account Login Here!",
+            "Login Here!",
             color = Color.Blue,
             fontSize = (20.sp),
             fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
         )
-        Spacer(modifier = Modifier.height(28.dp))
+
+        Spacer(modifier = Modifier.height(28.dp) )
         var email by remember { mutableStateOf(value = "") }
         var password by remember { mutableStateOf(value = "") }
         OutlinedTextField(
@@ -103,6 +102,7 @@ fun LoginScreen(navController: NavHostController){
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
+
         Spacer(modifier = Modifier.height(28.dp))
 
         OutlinedTextField(
@@ -118,19 +118,16 @@ fun LoginScreen(navController: NavHostController){
             },
             singleLine = true,
             modifier = Modifier.fillMaxWidth(),
+
             visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(28.dp))
 
         Button(
-            onClick = {
-                if (email.isBlank() || password.isBlank() )
-                {
-                    Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-                } else {
-                    myauth.login(email,password)
-                }
-            },
+                onClick = {
+                  myauth.login(email,password)
+
+                },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Blue,
@@ -141,10 +138,14 @@ fun LoginScreen(navController: NavHostController){
             Text("Login",
                 fontSize = 20.sp,)
         }
-        Spacer(modifier = Modifier.height(28.dp))
-        TextButton(onClick = {navController.navigate(ROUTE_REGISTER)}){
+        Spacer(modifier = Modifier.height(28.dp) )
+
+        Text("Don't have an account ?")
+        Spacer(modifier = Modifier.height(10.dp) )
+        TextButton(onClick = {navController.navigate(ROUTE_REGISTER) } )
+        {
             Text(
-                text = "Don't have an account? Register here",
+                text = "Register here",
                 fontSize = 20.sp
             )
         }

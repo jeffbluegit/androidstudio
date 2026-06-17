@@ -19,6 +19,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.geo.androidstudio.R
 import com.geo.androidstudio.navigation.ROUTE_LOGIN
+import com.geo.androidstudio.navigation.ROUTE_ONBOARDINGSCREEN
 import kotlinx.coroutines.delay
 
 
@@ -28,7 +29,7 @@ fun SplashScreen(navController: NavHostController){
     //launch effects
     LaunchedEffect(true){
         delay(2000) //It delays two seconds
-        navController.navigate(ROUTE_LOGIN)
+        navController.navigate(ROUTE_ONBOARDINGSCREEN)
 
     }
     Box(modifier = Modifier

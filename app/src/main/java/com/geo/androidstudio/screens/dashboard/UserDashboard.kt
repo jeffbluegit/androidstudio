@@ -54,6 +54,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil3.compose.rememberAsyncImagePainter
 import com.geo.androidstudio.models.Product
+import com.geo.androidstudio.navigation.ROUTE_PRODUCTLIST
 import com.geo.androidstudio.viewmodel.AuthViewModel
 import com.geo.androidstudio.viewmodel.ProductViewModel
 
@@ -62,11 +63,10 @@ import com.geo.androidstudio.viewmodel.ProductViewModel
 fun UserDashboardScreen(navController: NavHostController){
 
     var context= LocalContext.current
-    val isPreview = androidx.compose.ui.platform.LocalInspectionMode.current
 
     var productViewModel = ProductViewModel(navController,context)
     var authViewModel = AuthViewModel(navController, context)
-     var searchText by remember { mutableStateOf("") }
+    var searchText by remember { mutableStateOf("") }
     var product = remember {mutableStateOf(Product("","","","",""))}
     var products = remember {mutableStateListOf<Product>()}
     var username by remember {mutableStateOf("")}
@@ -99,12 +99,13 @@ fun UserDashboardScreen(navController: NavHostController){
             }
           )
         },
-        //floating action button
+//        floating action button
         floatingActionButton = {
-            FloatingActionButton(onClick = {},
+            FloatingActionButton(onClick = { ROUTE_PRODUCTLIST },
                 containerColor = Color.Blue
                 )
-            {Icon(imageVector = Icons.Default.ShoppingCart,
+            {
+                Icon(imageVector = Icons.Default.ShoppingCart,
                 contentDescription = "Cart",
                 tint=Color.Black)
             }
@@ -114,7 +115,7 @@ fun UserDashboardScreen(navController: NavHostController){
             NavigationBar {
                 NavigationBarItem(
                     selected = true,
-                    onClick = {  },
+                    onClick = {},
                     icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
                     label = { Text("Home") }
                 )
@@ -176,7 +177,6 @@ fun UserDashboardScreen(navController: NavHostController){
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductCard(product: Product) {
     Card(

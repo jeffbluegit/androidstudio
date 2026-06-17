@@ -11,3 +11,4 @@ const val ROUTE_PRODUCTLIST="productlist"
 const val ROUTE_UPDATEPRODUCT="Update-Product"
 
 const val ROUTE_USERDASHBOARD="userdashboard"
+const val ROUTE_ONBOARDINGSCREEN="Onboarding Screen."

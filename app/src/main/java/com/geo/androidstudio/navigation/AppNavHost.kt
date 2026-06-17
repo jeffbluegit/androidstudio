@@ -6,9 +6,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.geo.androidstudio.screens.dashboard.DashBoardScreen
+import com.geo.androidstudio.screens.dashboard.DashboardScreen
 import com.geo.androidstudio.screens.dashboard.UserDashboardScreen
 import com.geo.androidstudio.screens.login.LoginScreen
+import com.geo.androidstudio.screens.onboarding.OnboardingScreen
 import com.geo.androidstudio.screens.practice.HobbyScreen
 import com.geo.androidstudio.screens.products.AddProductScreen
 import com.geo.androidstudio.screens.products.ProductListScreen
@@ -34,7 +35,7 @@ fun AppNavHost(
           LoginScreen(navController)
         }
         composable(ROUTE_DASHBOARD) {
-            DashBoardScreen(navController)
+            DashboardScreen(navController)
         }
         composable(ROUTE_REGISTER) {
             RegisterScreen(navController)
@@ -54,6 +55,9 @@ fun AppNavHost(
         }
         composable(ROUTE_USERDASHBOARD) {
             UserDashboardScreen(navController)
+        }
+        composable(ROUTE_ONBOARDINGSCREEN) {
+            OnboardingScreen(navController)
         }
     }
 
